@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Income Tax Calculator 2025-26 | NS Tools</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+    body{background: linear-gradient(135deg, #0f0c29, #302b63); color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;position:relative;}
+  .container{background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:20px;padding:40px;max-width:550px;width:100%;}
+    h1{text-align:center;font-size:28px;margin-bottom:10px;background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .subtitle{text-align:center;color:#ccc;font-size:14px;margin-bottom:30px;}
+    label{display:block;margin:15px 0 8px;font-weight:600;}
+    input,select{width:100%;padding:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:16px;}
+    button{width:100%;padding:16px;margin-top:25px;background:linear-gradient(90deg,#a855f7,#ec4899);border:none;border-radius:10px;color:#fff;font-size:18px;font-weight:bold;cursor:pointer;}
+  .result{margin-top:30px;padding:25px;background:rgba(0,0,0,0.3);border-radius:15px;display:none; border:1px solid rgba(168,85,247,0.3);}
+  .row{display:flex;justify-content:space-between;margin:12px 0;}
+  .total{font-size:20px;color:#ec4899;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;margin-top:12px;}
+
+    /* MOBILE FRIENDLY CHESANU */
+    @media (max-width: 600px){
+      .container{padding:25px 20px;}
+      h1{font-size:22px;}
+      .lang-wrapper{top:10px; right:10px;}
+    }
+
+  .lang-wrapper{position:absolute; top:20px; right:20px; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.1); padding:8px 12px; border-radius:25px; cursor:pointer; border:1px solid rgba(255,255,255,0.2);}
+  .lang-circle{width:28px; height:28px; border-radius:50%; background:#a855f7; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;}
+  .lang-text{font-size:15px; font-weight:500;}
+  .lang-arrow{font-size:12px;}
+  .lang-dropdown{display:none; position:absolute; right:0; top:50px; background:#1a1a1a; border:1px solid #a855f7; border-radius:10px; overflow:hidden; z-index:999;}
+  .lang-dropdown button{display:block; width:160px; padding:12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer; font-size:15px;}
+  .lang-dropdown button:hover{background:#a855f7;}
+</style>
+</head>
+<body>
+
+<div class="lang-wrapper" onclick="toggleLang()">
+  <div class="lang-circle">A</div>
+  <div class="lang-text" id="currentLang">English</div>
+  <div class="lang-arrow">▼</div>
+  <div class="lang-dropdown" id="langMenu">
+    <button onclick="changeLanguage('en', 'English')">English</button>
+    <button onclick="changeLanguage('te', 'తెలుగు')">తెలుగు</button>
+    <button onclick="changeLanguage('hi', 'हिन्दी')">हिन्दी</button>
+    <button onclick="changeLanguage('ta', 'தமிழ்')">தமிழ்</button>
+  </div>
+</div>
+
+<div class="container">
+    <h1 id="title">🇮🇳 Income Tax Calculator</h1>
+    <p class="subtitle" id="subtitle">FY 2025-26 | New & Old Regime</p>
+
+    <label id="label1">Annual Income (₹)</label>
+    <input type="number" id="income" placeholder="Ex: 1200000">
+
+    <label id="label2">Select Tax Regime</label>
+    <select id="regime">
+        <option value="new">New Regime - Lower Rates</option>
+        <option value="old">Old Regime - With Deductions</option>
+    </select>
+
+    <label id="label3">Deductions - 80C, 80D etc (Only Old Regime) (₹)</label>
+    <input type="number" id="deduction" placeholder="Ex: 150000" value="0">
+
+    <button id="btn" onclick="calculateTax()">Calculate Tax Now</button>
+
+    <div class="result" id="result">
+        <h2 id="resTitle">📊 Your Tax Summary</h2>
+        <div class="row"><span id="t1">Taxable Income:</span><span id="taxable">₹0</span></div>
+        <div class="row"><span id="t2">Income Tax:</span><span id="tax">₹0</span></div>
+        <div class="row"><span id="t3">Health & Edu Cess 4%:</span><span id="cess">₹0</span></div>
+        <div class="row total"><span id="t4"><b>Total Tax Payable:</b></span><span id="total"><b>₹0</b></span></div>
+    </div>
+</div>
+
+<script>
+function toggleLang(){
+  let menu = document.getElementById('langMenu');
+  menu.style.display = menu.style.display === 'block'? 'none' : 'block';
+}
+
+const translations = {
+  en: {title:"🇮🇳 Income Tax Calculator", subtitle:"FY 2025-26 | New & Old Regime", l1:"Annual Income (₹)", l2:"Select Tax Regime", l3:"Deductions - 80C, 80D etc (Only Old Regime) (₹)", btn:"Calculate Tax Now", res:"📊 Your Tax Summary", t1:"Taxable Income:", t2:"Income Tax:", t3:"Health & Edu Cess 4%:", t4:"Total Tax Payable:"},
+  te: {title:"🇮🇳 ఆదాయపు పన్ను కాలిక్యులేటర్", subtitle:"FY 2025-26 | కొత్త & పాత విధానం", l1:"వార్షిక ఆదాయం (₹)", l2:"పన్ను విధానం ఎంచుకోండి", l3:"మినహాయింపులు - 80C, 80D మొదలైనవి (పాత విధానం మాత్రమే) (₹)", btn:"పన్ను లెక్కించండి", res:"📊 మీ పన్ను వివరాలు", t1:"పన్ను పరిధిలో ఆదాయం:", t2:"ఆదాయపు పన్ను:", t3:"సెస్ 4%:", t4:"మొత్తం చెల్లించాల్సిన పన్ను:"},
+  hi: {title:"🇮🇳 आयकर कैलकुलेटर", subtitle:"FY 2025-26 | नई और पुरानी व्यवस्था", l1:"वार्षिक आय (₹)", l2:"कर व्यवस्था चुनें", l3:"कटौती - 80C, 80D आदि (केवल पुरानी व्यवस्था) (₹)", btn:"कर की गणना करें", res:"📊 आपका कर सारांश", t1:"कर योग्य आय:", t2:"आयकर:", t3:"सेस 4%:", t4:"कुल देय कर:"},
+  ta: {title:"🇮🇳 வருமான வரி கால்குலேட்டர்", subtitle:"FY 2025-26 | புதிய & பழைய முறை", l1:"ஆண்டு வருமானம் (₹)", l2:"வரி முறையைத் தேர்ந்தெடுக்கவும்", l3:"விலக்குகள் - 80C, 80D போன்றவை (பழைய முறை மட்டும்) (₹)", btn:"வரியைக் கணக்கிடுங்கள்", res:"📊 உங்கள் வரி சுருக்கம்", t1:"வரிக்குரிய வருமானம்:", t2:"வருமான வரி:", t3:"செஸ் 4%:", t4:"மொத்த செலுத்த வேண்டிய வரி:"}
+}
+
+function changeLanguage(lang, name){
+  let t = translations[lang]; // <-- IKKADA FIX CHESANU. [lang] add chesanu
+  document.getElementById('currentLang').innerText = name;
+  document.getElementById('title').innerText = t.title;
+  document.getElementById('subtitle').innerText = t.subtitle;
+  document.getElementById('label1').innerText = t.l1;
+  document.getElementById('label2').innerText = t.l2;
+  document.getElementById('label3').innerText = t.l3;
+  document.getElementById('btn').innerText = t.btn;
+  document.getElementById('resTitle').innerText = t.res;
+  document.getElementById('t1').innerText = t.t1;
+  document.getElementById('t2').innerText = t.t2;
+  document.getElementById('t3').innerText = t.t3;
+  document.getElementById('t4').innerText = t.t4;
+  document.getElementById('langMenu').style.display = 'none';
+}
+
+function calculateTax(){
+    let income = parseFloat(document.getElementById('income').value) || 0;
+    let regime = document.getElementById('regime').value;
+    let deduction = parseFloat(document.getElementById('deduction').value) || 0;
+    let taxable = regime === 'old'? income - deduction : income;
+    if(taxable < 0) taxable = 0;
+
+    let tax = 0;
+    if(regime === 'new'){
+        if(taxable <= 400000) tax = 0;
+        else if(taxable <= 800000) tax = (taxable - 400000) * 0.05;
+        else if(taxable <= 1200000) tax = 20000 + (taxable - 800000) * 0.10;
+        else if(taxable <= 1600000) tax = 60000 + (taxable - 1200000) * 0.15;
+        else if(taxable <= 2000000) tax = 120000 + (taxable - 1600000) * 0.20;
+        else tax = 200000 + (taxable - 2000000) * 0.30;
+    } else {
+        if(taxable <= 250000) tax = 0;
+        else if(taxable <= 500000) tax = (taxable - 250000) * 0.05;
+        else if(taxable <= 1000000) tax = 12500 + (taxable - 500000) * 0.20;
+        else tax = 112500 + (taxable - 1000000) * 0.30;
+    }
+
+    let cess = tax * 0.04;
+    let total = tax + cess;
+    document.getElementById('taxable').innerText = '₹' + taxable.toLocaleString('en-IN');
+    document.getElementById('tax').innerText = '₹' + tax.toLocaleString('en-IN');
+    document.getElementById('cess').innerText = '₹' + cess.toLocaleString('en-IN');
+    document.getElementById('total').innerText = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+</body>
+</html>
